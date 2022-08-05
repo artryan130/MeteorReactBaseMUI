@@ -7,6 +7,7 @@ import { ProductServerBase } from '/imports/api/productServerBase';
 import { check } from 'meteor/check';
 import { IContext } from '/imports/typings/IContext';
 import { Meteor } from 'meteor/meteor';
+import { getUser } from '/imports/libs/getUser';
 // endregion
 //methods
 class TaskServerApi extends ProductServerBase<ITask> {
@@ -17,8 +18,13 @@ class TaskServerApi extends ProductServerBase<ITask> {
 
         this.addTransformedPublication(
             'taskList',
-            (filter = { isPersonal: false }) => {
-                return this.defaultListCollectionPublication(filter, {
+            (filter = {}) => {
+                const user = getUser();
+                const newFilter = {
+                    ...filter,
+                    $or: [{ isPersonal: false }, { createdby: user._id, isPersonal: true }],
+                };
+                return this.defaultListCollectionPublication(newFilter, {
                     projection: {
                         image: 1,
                         title: 1,
@@ -42,6 +48,22 @@ class TaskServerApi extends ProductServerBase<ITask> {
         });
 
         this.registerMethod('MudartituloEDescricao', this.serverMudartituloEDescricao);
+
+        this.registerMethod('GetAllTask', this._serverGetGetAllTask);
+    }
+
+    _serverGetGetAllTask() {
+        const allTask: Partial<ITask>[] = taskServerApi
+            .defaultCollectionPublication(
+                {},
+                {
+                    fields: { image: 1, title: 1, description: 1 },
+                    limit: 5,
+                    sort: { createdat: -1 },
+                }
+            )
+            .fetch();
+        return allTask;
     }
 
     beforeInsert(_docObj: ITask, _context: IContext): boolean {

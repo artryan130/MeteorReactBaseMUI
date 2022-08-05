@@ -2,10 +2,11 @@ import React from 'react';
 
 import Container from '@mui/material/Container';
 import * as appStyle from '/imports/materialui/styles';
+import { Lista } from '../../components/List/List';
 
 const Home = () => (
     <>
-        <Container>
+        {/* <Container>
             <h1>Material-UI Template</h1>
             <p>This is a basic fixed menu template using fixed size containers.</p>
             <p>
@@ -20,6 +21,9 @@ const Home = () => (
             <img src="/images/wireframe/paragraph.png" style={appStyle.containerHome} />
             <img src="/images/wireframe/paragraph.png" style={appStyle.containerHome} />
             <img src="/images/wireframe/paragraph.png" style={appStyle.containerHome} />
+        </Container> */}
+        <Container>
+            <Lista />
         </Container>
     </>
 );
