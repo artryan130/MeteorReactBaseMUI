@@ -4,15 +4,11 @@ export interface IAppMenu {
     path?: string;
     name?: string;
     isProtected?: boolean;
-    icon?: React.ReactFragment;
+    icon?: any;
 }
 export interface IRoute {
-    path?: string;
-    component:
-        | React.ReactFragment
-        | React.Component
-        | React.FunctionComponent<any>
-        | React.ComponentType<any>;
+    path: string;
+    component: any;
     isProtected?: boolean;
     exact?: string | boolean | undefined;
     resources?: string[];

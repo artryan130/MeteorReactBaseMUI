@@ -1,0 +1,6 @@
+export enum Recurso {
+    TASK_VIEW = 'TASK_VIEW',
+    TASK_CREATE = 'TASK_CREATE',
+    TASK_UPDATE = 'TASK_UPDATE',
+    TASK_REMOVE = 'TASK_REMOVE',
+}
