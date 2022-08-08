@@ -33,23 +33,15 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 interface ITaskDetail extends IDefaultDetailProps {
     taskDoc: ITask;
     save: (doc: ITask, _callback?: any) => void;
-    mudar: (doc: ITask, _callback?: any) => void;
 }
 
 const TaskDetail = (props: ITaskDetail) => {
-    const { isPrintView, screenState, loading, taskDoc, mudar, save, navigate } = props;
+    const { isPrintView, screenState, loading, taskDoc, save, navigate } = props;
 
     const theme = useTheme();
 
     const handleSubmit = (doc: ITask) => {
         save({ ...doc, status: !!doc.status ? doc.status : false });
-    };
-    console.log(taskDoc);
-    const handleMudar = () => {
-        mudar(taskDoc._id, (e, r) => {
-            console.log('Erro:', e);
-            console.log('Sucesso:', r);
-        });
     };
 
     return (
@@ -99,7 +91,11 @@ const TaskDetail = (props: ITaskDetail) => {
                 key={'ExempleDetail-SimpleFormKEY'}
                 mode={screenState}
                 schema={taskApi.getSchema()}
-                doc={taskDoc}
+                doc={
+                    screenState === 'create'
+                        ? { ...taskDoc, status: false, isPersonal: false }
+                        : taskDoc
+                }
                 onSubmit={handleSubmit}
                 loading={loading}
             >
@@ -246,9 +242,6 @@ const TaskDetail = (props: ITaskDetail) => {
                             {'Salvar'}
                         </Button>
                     ) : null}
-                    <Button key={'k4'} variant={'contained'} onClick={handleMudar}>
-                        {'Alterar'}
-                    </Button>
                 </div>
             </SimpleForm>
         </PageLayout>
@@ -266,7 +259,6 @@ export const TaskDetailContainer = withTracker((props: ITaskDetailContainer) => 
     return {
         screenState,
         taskDoc,
-        mudar: (id: string, callback: () => void) => taskApi.mudarTituloeDescricao(id, callback),
         save: (doc: ITask, _callback: () => void) => {
             const selectedAction = screenState === 'create' ? 'insert' : 'update';
             taskApi[selectedAction](doc, (e: IMeteorError, r: string) => {

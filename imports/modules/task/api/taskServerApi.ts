@@ -59,7 +59,7 @@ class TaskServerApi extends ProductServerBase<ITask> {
                 {
                     fields: { image: 1, title: 1, description: 1 },
                     limit: 5,
-                    sort: { createdat: -1 },
+                    sort: { createdat: 1 },
                 }
             )
             .fetch();

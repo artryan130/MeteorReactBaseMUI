@@ -17,6 +17,10 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import { getUser } from '/imports/libs/getUser';
+import Checkbox from '@mui/material/Checkbox';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 export const Lista = () => {
     const [task]: [Partial<ITask>[] | null, boolean, IMeteorError | null] = useMethod<ITask>(
@@ -31,17 +35,46 @@ export const Lista = () => {
     const isWD380 = useMediaQuery('(max-width:380px)');
 
     const navigate = useNavigate();
-
+    const user = getUser();
     return (
-        <Box>
-            <Typography variant="h3" sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={ListStyle.container}>
+            <Typography
+                variant="h2"
+                sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}
+            >
                 Atividades recentes
             </Typography>
-            <Box>
+            <Typography
+                variant="h4"
+                sx={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}
+            >
+                Bem vindo {user.username}, essas são as atividades adicionadas recentemente no
+                nossos sistema!
+            </Typography>
+
+            <Box sx={ListStyle.tarefas}>
                 {task?.map((task, index) => (
                     <Box key={index}>
-                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                            <ListItem alignItems="flex-start">
+                        <List
+                            sx={{
+                                width: '100%',
+                                maxWidth: 360,
+                                bgcolor: 'background.paper',
+                                marginBottom: '0.5rem',
+                            }}
+                        >
+                            <ListItem
+                                alignItems="flex-start"
+                                secondaryAction={
+                                    <Checkbox
+                                        edge="end"
+                                        checked={task.status}
+                                        icon={<RadioButtonUncheckedIcon />}
+                                        checkedIcon={<TaskAltIcon />}
+                                    />
+                                }
+                                disablePadding
+                            >
                                 <ListItemAvatar>
                                     <Avatar alt="image" src={task.image} />
                                 </ListItemAvatar>
@@ -52,9 +85,11 @@ export const Lista = () => {
                     </Box>
                 ))}
             </Box>
-            <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Tooltip title="Acessar Minhas Tarefas">
-                    <Button onClick={() => navigate('/task')}>Minhas Tarefas</Button>
+                    <Button variant="contained" onClick={() => navigate('/task')}>
+                        Ir para tarefas
+                    </Button>
                 </Tooltip>
             </Box>
         </Box>
