@@ -58,7 +58,7 @@ export const Lista = () => {
                         <List
                             sx={{
                                 width: '100%',
-                                maxWidth: 360,
+                                maxWidth: '100vw',
                                 bgcolor: 'background.paper',
                                 marginBottom: '0.5rem',
                             }}
@@ -71,6 +71,7 @@ export const Lista = () => {
                                         checked={task.status}
                                         icon={<RadioButtonUncheckedIcon />}
                                         checkedIcon={<TaskAltIcon />}
+                                        disabled
                                     />
                                 }
                                 disablePadding
@@ -78,7 +79,11 @@ export const Lista = () => {
                                 <ListItemAvatar>
                                     <Avatar alt="image" src={task.image} />
                                 </ListItemAvatar>
-                                <ListItemText primary={task.title} secondary={task.description} />
+                                <ListItemText
+                                    primary={task.title}
+                                    secondary={task.description}
+                                    sx={{ maxWidth: { xs: '65vw', sm: '75vw', md: '80vw' } }}
+                                />
                             </ListItem>
                             <Divider variant="inset" component="li" />
                         </List>

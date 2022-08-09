@@ -1,5 +1,6 @@
 import { Recurso as Exemplo } from '/imports/modules/example/config/Recursos';
 import { Recurso as Task } from '/imports/modules/task/config/Recursos';
+import { Recurso as Tarefa } from '/imports/modules/tarefa/config/Recursos';
 
 import { RoleType } from '/imports/seguranca/config/RoleType';
 
@@ -34,6 +35,10 @@ export const mapRolesRecursos: MapRolesRecursos = {
         Task.TASK_CREATE,
         Task.TASK_UPDATE,
         Task.TASK_REMOVE,
+        Tarefa.TAREFA_VIEW,
+        Tarefa.TAREFA_CREATE,
+        Tarefa.TAREFA_UPDATE,
+        Tarefa.TAREFA_REMOVE,
     ],
     [RoleType.USUARIO]: [
         Exemplo.EXAMPLE_VIEW,
@@ -44,6 +49,10 @@ export const mapRolesRecursos: MapRolesRecursos = {
         Task.TASK_CREATE,
         Task.TASK_UPDATE,
         Task.TASK_REMOVE,
+        Tarefa.TAREFA_VIEW,
+        Tarefa.TAREFA_CREATE,
+        Tarefa.TAREFA_UPDATE,
+        Tarefa.TAREFA_REMOVE,
     ],
     [RoleType.PUBLICO]: [],
 };

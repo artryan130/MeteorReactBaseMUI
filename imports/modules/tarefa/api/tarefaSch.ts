@@ -1,6 +1,6 @@
 import { IDoc } from '/imports/typings/IDoc';
 
-export const taskSch = {
+export const tarefaSch = {
     image: {
         type: String,
         label: 'Imagem',
@@ -55,7 +55,7 @@ export const taskSch = {
     },
 };
 
-export interface ITask extends IDoc {
+export interface ITarefa extends IDoc {
     image: string;
     title: string;
     description: string;

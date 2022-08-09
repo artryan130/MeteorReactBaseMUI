@@ -2,6 +2,7 @@ import userprofile from '../userprofile/config';
 import example from './example/config';
 import task from './task/config';
 import pages from '../ui/config/index';
+import tarefa from './tarefa/config';
 import { IAppMenu, IModules, IRoute } from './modulesTypings';
 
 class Modules implements IModules {
@@ -15,6 +16,7 @@ class Modules implements IModules {
             ...userprofile.userProfileRouterList,
             ...example.exampleRouterList,
             ...task.taskRouterList,
+            ...tarefa.tarefaRouterList,
         ];
 
         // Create modules App Menu Item list
@@ -23,6 +25,7 @@ class Modules implements IModules {
             ...userprofile.userProfileMenuItemList,
             ...example.exampleMenuItemList,
             ...task.taskMenuItemList,
+            ...tarefa.tarefaMenuItemList,
         ];
     }
 
