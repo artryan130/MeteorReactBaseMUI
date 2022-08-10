@@ -43,7 +43,10 @@ import Checkbox from '@mui/material/Checkbox';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import Switch from '@mui/material/Switch';
+import LongMenu from '/imports/ui/components/Menu/Menu';
 
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 interface ITarefaList extends IDefaultListProps {
     remove: (doc: ITarefa) => void;
     status: (doc: ITarefa) => void;
@@ -77,8 +80,8 @@ const TarefaList = (props: ITarefaList) => {
 
     const idTarefa = shortid.generate();
 
-    const onClick = (_event: React.SyntheticEvent, id: string) => {
-        navigate('/tarefa/view/' + id);
+    const onClick = (_event: React.SyntheticEvent, tarefas: ITarefa) => {
+        navigate('/tarefa/view/' + tarefas._id);
     };
 
     const handleChangePage = (
@@ -142,7 +145,7 @@ const TarefaList = (props: ITarefaList) => {
     // @ts-ignore
     return (
         <PageLayout title={'Lista de Exemplos'} actions={[]}>
-            <SearchDocField
+            {/* <SearchDocField
                 api={userprofileApi}
                 subscribe={'getListOfusers'}
                 getOptionLabel={(doc) => doc.username || 'error'}
@@ -169,20 +172,20 @@ const TarefaList = (props: ITarefaList) => {
                         setViewComplexTable(evt.target.value);
                     }}
                 />
-            )}
-            {(!viewComplexTable || isMobile) && (
-                <>
-                    <TextField
-                        name={'pesquisar'}
-                        label={'Pesquisar'}
-                        value={text}
-                        onChange={change}
-                        onKeyPress={keyPress}
-                        placeholder="Digite aqui o que deseja pesquisa..."
-                        action={{ icon: 'search', onClick: click }}
-                    />
+            )} */}
+            {/* {(!viewComplexTable || isMobile) && ( */}
+            <>
+                <TextField
+                    name={'pesquisar'}
+                    label={'Pesquisar'}
+                    value={text}
+                    onChange={change}
+                    onKeyPress={keyPress}
+                    placeholder="Digite aqui o que deseja pesquisa..."
+                    action={{ icon: 'search', onClick: click }}
+                />
 
-                    {/* <SimpleTable
+                {/* <SimpleTable
                         schema={_.pick(
                             {
                                 ...tarefaApi.schema,
@@ -195,54 +198,76 @@ const TarefaList = (props: ITarefaList) => {
                         actions={[{ icon: <Delete />, id: 'delete', onClick: callRemove }]}
                     /> */}
 
-                    <Box>
+                <Box>
+                    <List
+                        sx={{
+                            width: '100%',
+                            maxWidth: '100vw',
+                            bgcolor: 'background.paper',
+                            marginBottom: '0.5rem',
+                        }}
+                    >
                         {tarefas?.map((tarefas, index) => (
                             <Box key={index}>
-                                <List
-                                    sx={{
-                                        width: '100%',
-                                        maxWidth: '100vw',
-                                        bgcolor: 'background.paper',
-                                        marginBottom: '0.5rem',
-                                    }}
-                                >
-                                    <ListItem
-                                        onClick={onClick}
-                                        alignItems="flex-start"
-                                        secondaryAction={
-                                            // <Checkbox
-                                            //     edge="end"
-                                            //     checked={tarefas.status}
-                                            //     icon={<RadioButtonUncheckedIcon />}
-                                            //     checkedIcon={<TaskAltIcon />}
-                                            //     onChange={callAlterarStatus}
-                                            // />
+                                <ListItem
+                                    sx={{ cursor: 'pointer' }}
+                                    onClick={(e) => onClick(e, tarefas)}
+                                    alignItems="flex-start"
+                                    secondaryAction={
+                                        <>
                                             <Switch
                                                 checked={tarefas.status}
-                                                onChange={callAlterarStatus}
+                                                onChange={() => callAlterarStatus(tarefas)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
                                                 // inputProps={{ 'aria-label': 'controlled' }}
                                             />
-                                        }
-                                        disablePadding
-                                    >
-                                        <ListItemAvatar>
-                                            <Avatar alt="image" src={tarefas.image} />
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={tarefas.title}
-                                            secondary={tarefas.description}
-                                            sx={{
-                                                maxWidth: { xs: '65vw', sm: '75vw', md: '80vw' },
-                                            }}
+                                            <IconButton
+                                                aria-label="delete"
+                                                onClick={(e) => {
+                                                    callRemove(tarefas), e.stopPropagation();
+                                                }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                aria-label="edit"
+                                                onClick={(e) => {
+                                                    onClick(e, tarefas), e.stopPropagation();
+                                                }}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                        </>
+                                    }
+                                    disablePadding
+                                >
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt="image"
+                                            src={
+                                                tarefas.status === false
+                                                    ? '/images/cancel.png'
+                                                    : '/images/concluido.png'
+                                            }
                                         />
-                                    </ListItem>
-                                    <Divider variant="inset" component="li" />
-                                </List>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary={tarefas.title}
+                                        secondary={tarefas.description}
+                                        sx={{
+                                            maxWidth: { xs: '65vw', sm: '75vw', md: '80vw' },
+                                        }}
+                                    />
+                                </ListItem>
+                                <Divider variant="inset" component="li" />
                             </Box>
                         ))}
-                    </Box>
-                </>
-            )}
+                    </List>
+                </Box>
+            </>
+            {/* )} */}
 
             {!isMobile && viewComplexTable && (
                 <ComplexTable
