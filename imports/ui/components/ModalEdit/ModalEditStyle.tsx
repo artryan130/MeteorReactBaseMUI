@@ -1,0 +1,41 @@
+import { ISxStyleObject } from '/imports/typings/ISxStyleObject';
+
+export const ModalEditStyle: ISxStyleObject = {
+    modal: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: { xs: '100%', sm: 'fit-content' },
+        height: { xs: '100%', sm: 'fit-content' },
+        background: 'white',
+        boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.25)',
+        overflowY: 'auto',
+        padding: { xs: '1rem', sm: '1.5rem' },
+        display: 'flex',
+        flexDirection: 'column',
+        marginTop: 'auto',
+        marginBottom: 'auto',
+        borderRadius: { xs: 0, sm: '20px' },
+        marginRight: '1rem',
+        maxWidth: '520px',
+        paddingBottom: '1.5rem',
+    },
+    header: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        alignItems: 'end',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1,
+    },
+    conteudo: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '32px',
+        textAlign: 'center',
+        margin: '48px 0',
+    },
+};

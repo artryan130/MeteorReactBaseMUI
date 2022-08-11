@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { tarefaApi } from '../../api/tarefaApi';
 import SimpleForm from '../../../../ui/components/SimpleForm/SimpleForm';
@@ -27,7 +27,8 @@ import { showLoading } from '/imports/ui/components/Loading/Loading';
 
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 interface ITarefaDetail extends IDefaultDetailProps {
     tarefaDoc: ITarefa;
     save: (doc: ITarefa, _callback?: any) => void;
@@ -36,6 +37,7 @@ interface ITarefaDetail extends IDefaultDetailProps {
 const TarefaDetail = (props: ITarefaDetail) => {
     const { isPrintView, screenState, loading, tarefaDoc, save, navigate } = props;
 
+    const [openModal, setOpenModal] = useState(true);
     const theme = useTheme();
 
     const handleSubmit = (doc: ITarefa) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { tarefaApi } from '../../api/tarefaApi';
 import { userprofileApi } from '../../../../userprofile/api/UserProfileApi';
@@ -47,9 +47,12 @@ import LongMenu from '/imports/ui/components/Menu/Menu';
 
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { ModalEdit } from '/imports/ui/components/ModalEdit/ModalEdit';
 interface ITarefaList extends IDefaultListProps {
     remove: (doc: ITarefa) => void;
     status: (doc: ITarefa) => void;
+    save: (doc: ITarefa) => void;
+    personal: (doc: ITarefa) => void;
     viewComplexTable: boolean;
     setViewComplexTable: (_enable: boolean) => void;
     tarefas: ITarefa[];
@@ -63,6 +66,8 @@ const TarefaList = (props: ITarefaList) => {
         navigate,
         remove,
         status,
+        save,
+        personal,
         showDeleteDialog,
         onSearch,
         total,
@@ -79,9 +84,12 @@ const TarefaList = (props: ITarefaList) => {
     } = props;
 
     const idTarefa = shortid.generate();
+    const [tarefaUnica, setTarefaUnica] = useState({});
 
-    const onClick = (_event: React.SyntheticEvent, tarefas: ITarefa) => {
-        navigate('/tarefa/view/' + tarefas._id);
+    const onClick = (_event: React.SyntheticEvent, tarefa: ITarefa) => {
+        // navigate('/tarefa/view/' + tarefas._id);
+        setOpenModal(true);
+        setTarefaUnica(tarefa);
     };
 
     const handleChangePage = (
@@ -137,10 +145,20 @@ const TarefaList = (props: ITarefaList) => {
         status(doc);
     };
 
+    const callSave = (doc: ITarefa) => {
+        save(doc);
+    };
+
+    const callAlterarPersonal = (doc: ITarefa) => {
+        personal(doc);
+    };
+
     const handleSearchDocChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         !!e.target.value ? setFilter({ createdby: e.target.value }) : clearFilter();
     };
 
+    const [openModal, setOpenModal] = useState(false);
+    const handleCloseModal = () => setOpenModal(false);
     // @ts-ignore
     // @ts-ignore
     return (
@@ -207,17 +225,17 @@ const TarefaList = (props: ITarefaList) => {
                             marginBottom: '0.5rem',
                         }}
                     >
-                        {tarefas?.map((tarefas, index) => (
+                        {tarefas?.map((tarefa, index) => (
                             <Box key={index}>
                                 <ListItem
                                     sx={{ cursor: 'pointer' }}
-                                    onClick={(e) => onClick(e, tarefas)}
+                                    onClick={(e) => onClick(e, tarefa)}
                                     alignItems="flex-start"
                                     secondaryAction={
                                         <>
                                             <Switch
-                                                checked={tarefas.status}
-                                                onChange={() => callAlterarStatus(tarefas)}
+                                                checked={tarefa.status}
+                                                onChange={() => callAlterarStatus(tarefa)}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                 }}
@@ -226,7 +244,7 @@ const TarefaList = (props: ITarefaList) => {
                                             <IconButton
                                                 aria-label="delete"
                                                 onClick={(e) => {
-                                                    callRemove(tarefas), e.stopPropagation();
+                                                    callRemove(tarefa), e.stopPropagation();
                                                 }}
                                             >
                                                 <DeleteIcon />
@@ -234,7 +252,7 @@ const TarefaList = (props: ITarefaList) => {
                                             <IconButton
                                                 aria-label="edit"
                                                 onClick={(e) => {
-                                                    onClick(e, tarefas), e.stopPropagation();
+                                                    onClick(e, tarefa), e.stopPropagation();
                                                 }}
                                             >
                                                 <EditIcon />
@@ -247,15 +265,15 @@ const TarefaList = (props: ITarefaList) => {
                                         <Avatar
                                             alt="image"
                                             src={
-                                                tarefas.status === false
+                                                tarefa.status === false
                                                     ? '/images/cancel.png'
                                                     : '/images/concluido.png'
                                             }
                                         />
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary={tarefas.title}
-                                        secondary={tarefas.description}
+                                        primary={tarefa.title}
+                                        secondary={tarefa.description}
                                         sx={{
                                             maxWidth: { xs: '65vw', sm: '75vw', md: '80vw' },
                                         }}
@@ -265,6 +283,14 @@ const TarefaList = (props: ITarefaList) => {
                             </Box>
                         ))}
                     </List>
+                    <ModalEdit
+                        openModal={openModal}
+                        handleCloseModal={handleCloseModal}
+                        tarefa={tarefaUnica}
+                        callAlterarStatus={callAlterarStatus}
+                        callAlterarPersonal={callAlterarPersonal}
+                        callSave={callSave}
+                    />
                 </Box>
             </>
             {/* )} */}
@@ -409,6 +435,49 @@ export const TarefaListContainer = withTracker((props: IDefaultContainerProps) =
         },
         status: (doc: ITarefa) => {
             const docUpdate = { ...doc, status: !doc.status };
+            tarefaApi.update(docUpdate, (e: IMeteorError) => {
+                if (!e) {
+                    showNotification &&
+                        showNotification({
+                            type: 'sucess',
+                            title: 'Operação realizada com sucesso!',
+                            description: 'O status da task foi atualizado com sucesso',
+                        });
+                } else {
+                    console.log('Error:', e);
+                    showNotification &&
+                        showNotification({
+                            type: 'warning',
+                            title: 'Operação não realizada!',
+                            description: `Erro ao realizar a operação: ${e.reason}`,
+                        });
+                }
+            });
+        },
+        save: (doc: ITarefa, _callback: () => void) => {
+            tarefaApi.update(doc, (e: IMeteorError, r: string) => {
+                if (!e) {
+                    showNotification &&
+                        showNotification({
+                            type: 'success',
+                            title: 'Operação realizada!',
+                            description: `O exemplo foi ${
+                                doc._id ? 'atualizado' : 'cadastrado'
+                            } com sucesso!`,
+                        });
+                } else {
+                    console.log('Error:', e);
+                    showNotification &&
+                        showNotification({
+                            type: 'warning',
+                            title: 'Operação não realizada!',
+                            description: `Erro ao realizar a operação: ${e.reason}`,
+                        });
+                }
+            });
+        },
+        personal: (doc: ITarefa) => {
+            const docUpdate = { ...doc, isPersonal: !doc.isPersonal };
             tarefaApi.update(docUpdate, (e: IMeteorError) => {
                 if (!e) {
                     showNotification &&
