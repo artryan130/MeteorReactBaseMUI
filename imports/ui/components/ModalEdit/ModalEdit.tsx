@@ -10,7 +10,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { ITarefa } from '/imports/modules/tarefa/api/tarefaSch';
 import { ModalEditStyle } from './ModalEditStyle';
-import TextField from '@mui/material/TextField';
+// import TextField from '@mui/material/TextField';
+import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useState } from 'react';
@@ -19,8 +20,8 @@ interface IModalEdit {
     openModal: boolean;
     handleCloseModal: () => void;
     tarefa: ITarefa;
-    callAlterarStatus: (tarefa: ITarefa) => void;
-    callAlterarPersonal: (tarefa: ITarefa) => void;
+    // callAlterarStatus: (tarefa: ITarefa) => void;
+    // callAlterarPersonal: (tarefa: ITarefa) => void;
     callSave: (tarefa: ITarefa) => void;
 }
 
@@ -29,26 +30,27 @@ export const ModalEdit = (props: IModalEdit): JSX.Element => {
         openModal,
         handleCloseModal,
         tarefa,
-        callAlterarStatus,
-        callAlterarPersonal,
+        // callAlterarStatus,
+        // callAlterarPersonal,
         callSave,
     } = props;
 
-    const [novaTarefa, setNovaTarefa] = useState({});
+    const [novaTarefa, setNovaTarefa] = useState({
+        title: tarefa.title,
+        description: tarefa.description,
+        status: tarefa.status,
+        isPersonal: tarefa.isPersonal,
+    });
 
     const handleChange = (e) => {
-        // setDados({...dados,
-        //     [e.target.name]: e.target.value
-        // })
         if (e.target.name === 'title') {
-            // const novaTarefa = {...tarefa, title: e.target.value}
-            setNovaTarefa({ ...tarefa, title: e.target.value });
+            setNovaTarefa({ ...novaTarefa, title: e.target.value });
+            console.log({ ...novaTarefa, title: e.target.value });
+            console.log(tarefa);
         } else if (e.target.name === 'description') {
-            // const novaTarefa = {...tarefa, description: e.target.value}
-            setNovaTarefa({ ...tarefa, description: e.target.value });
+            setNovaTarefa({ ...novaTarefa, description: e.target.value });
         } else {
-            // const novaTarefa = {...tarefa, [e.target.name]: e.target.value}
-            setNovaTarefa({ ...tarefa, [e.target.name]: e.target.value });
+            setNovaTarefa({ ...novaTarefa, [e.target.name]: e.target.value });
         }
     };
 
@@ -82,8 +84,11 @@ export const ModalEdit = (props: IModalEdit): JSX.Element => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={tarefa.status}
-                                onChange={() => callAlterarStatus(tarefa)}
+                                checked={novaTarefa.status}
+                                onChange={() => {
+                                    // callAlterarStatus(novaTarefa)
+                                    setNovaTarefa({ ...novaTarefa, status: !novaTarefa.status });
+                                }}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                 }}
@@ -96,8 +101,14 @@ export const ModalEdit = (props: IModalEdit): JSX.Element => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={tarefa.isPersonal}
-                                onChange={() => callAlterarPersonal(tarefa)}
+                                checked={novaTarefa.isPersonal}
+                                onChange={() => {
+                                    // callAlterarPersonal(novaTarefa)
+                                    setNovaTarefa({
+                                        ...novaTarefa,
+                                        isPersonal: !novaTarefa.isPersonal,
+                                    });
+                                }}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                 }}

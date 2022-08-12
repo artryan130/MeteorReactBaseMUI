@@ -141,13 +141,21 @@ const TarefaList = (props: ITarefaList) => {
         navigate('/task/view/' + doc._id);
     };
 
+    // const callAlterarStatus = (doc: ITarefa) => {
+    //     status({...tarefaUnica, ...doc});
+    // };
+
     const callAlterarStatus = (doc: ITarefa) => {
         status(doc);
     };
 
     const callSave = (doc: ITarefa) => {
-        save(doc);
+        save({ ...tarefaUnica, ...doc });
     };
+
+    // const callAlterarPersonal = (doc: ITarefa) => {
+    //     personal({...tarefaUnica, ...doc});
+    // };
 
     const callAlterarPersonal = (doc: ITarefa) => {
         personal(doc);
@@ -284,6 +292,7 @@ const TarefaList = (props: ITarefaList) => {
                         ))}
                     </List>
                     <ModalEdit
+                        key={tarefaUnica ? tarefaUnica._id : 'semtarefa'}
                         openModal={openModal}
                         handleCloseModal={handleCloseModal}
                         tarefa={tarefaUnica}

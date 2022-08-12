@@ -56,10 +56,9 @@ export const tarefaSch = {
 };
 
 export interface ITarefa extends IDoc {
-    image: string;
+    image?: string;
     title: string;
     description: string;
     status: Boolean;
-    createdby: string;
     isPersonal: Boolean;
 }
